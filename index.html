@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For the Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1B1533;
+    --bg-2: #241C42;
+    --card: #2A2151;
+    --ink: #F3EFE8;
+    --ink-dim: #B9AFD6;
+    --gold: #D4A73A;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle at 20% 0%, var(--bg-2), var(--bg) 60%);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  .wrap{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 72px 24px 100px;
+  }
+
+  header{
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  header .eyebrow{
+    color: var(--gold);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+  }
+
+  header h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: 1.1;
+    margin: 0 0 18px;
+  }
+
+  header p{
+    color: var(--ink-dim);
+    font-size: 17px;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 22px;
+  }
+
+  .card{
+    position: relative;
+    background: var(--card);
+    border-radius: 18px;
+    padding: 28px 24px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+    overflow: hidden;
+    min-height: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .card::before{
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: var(--accent, var(--gold));
+  }
+
+  .card:hover{
+    transform: translateY(-4px);
+    border-color: var(--accent, var(--gold));
+  }
+
+  .card .avatar{
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent, var(--gold));
+    color: #1B1533;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 19px;
+    margin-bottom: 20px;
+  }
+
+  .card .name{
+    font-family: 'Fraunces', serif;
+    font-size: 21px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .card .hint{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+  }
+
+  /* overlay */
+  .overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 8, 28, 0.82);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 50;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+  }
+  .overlay.active{
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .panel{
+    background: var(--bg-2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    max-width: 460px;
+    width: 100%;
+    padding: 40px 36px;
+    text-align: center;
+    position: relative;
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    transition: transform 0.32s ease, opacity 0.32s ease;
+  }
+
+  .overlay.active .panel{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .panel .avatar-lg{
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--accent, var(--gold));
+    color: #1B1533;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 24px;
+    margin: 0 auto 18px;
+  }
+
+  .panel h2{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 24px;
+    margin: 0 0 6px;
+  }
+
+  .panel .sub{
+    color: var(--ink-dim);
+    font-size: 14px;
+    margin-bottom: 26px;
+  }
+
+  .panel input[type="password"]{
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.04);
+    color: var(--ink);
+    font-size: 15px;
+    font-family: 'Work Sans', sans-serif;
+    outline: none;
+  }
+
+  .panel input[type="password"]:focus{
+    border-color: var(--accent, var(--gold));
+  }
+
+  .panel .error{
+    color: #E8735C;
+    font-size: 13px;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+
+  .panel .actions{
+    margin-top: 22px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .btn{
+    border: none;
+    border-radius: 999px;
+    padding: 12px 26px;
+    font-size: 14.5px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+  }
+
+  .btn-primary{
+    background: var(--accent, var(--gold));
+    color: #1B1533;
+  }
+
+  .btn-ghost{
+    background: transparent;
+    color: var(--ink-dim);
+    border: 1px solid rgba(255,255,255,0.14);
+  }
+
+  .quote-view{ display: none; }
+  .quote-view.active{ display: block; }
+  .pass-view.hidden{ display: none; }
+
+  .quote-view blockquote{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.5;
+    margin: 6px 0 0;
+    color: var(--ink);
+  }
+
+  .quote-view .heart{
+    display: inline-block;
+    color: #E8735C;
+    margin-left: 6px;
+  }
+
+  .sparkle-layer{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 20px;
+  }
+
+  .sparkle{
+    position: absolute;
+    top: var(--sy);
+    left: var(--sx);
+    width: var(--ssize);
+    height: var(--ssize);
+    color: var(--accent, var(--gold));
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    animation: sparkle-pop var(--sdur) ease-out var(--sdelay) forwards;
+  }
+
+  .sparkle svg{ width: 100%; height: 100%; display: block; }
+
+  @keyframes sparkle-pop{
+    0%{ opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+    35%{ opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(90deg); }
+    100%{ opacity: 0; transform: translate(-50%, calc(-50% - 26px)) scale(0.3) rotate(160deg); }
+  }
+
+  .close-x{
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: none;
+    border: none;
+    color: var(--ink-dim);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  footer{
+    text-align: center;
+    color: var(--ink-dim);
+    font-size: 13px;
+    margin-top: 80px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card, .panel{ transition: none; animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">A little something for each of you</div>
+    <h1>Open your card</h1>
+    <p>One box, one password, one thing I wanted you to hear. Find your name below.</p>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>Made with care, for the team by hemanth :)</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="panel" id="panel">
+    <button class="close-x" id="closeBtn" aria-label="Close">&times;</button>
+    <div class="sparkle-layer" id="sparkleLayer"></div>
+
+    <div class="pass-view" id="passView">
+      <div class="avatar-lg" id="avatarLg"></div>
+      <h2 id="nameLabel"></h2>
+      <div class="sub">This one's just for you. Enter your password.</div>
+      <input type="password" id="passInput" placeholder="Password" autocomplete="off" />
+      <div class="error" id="errorMsg"></div>
+      <div class="actions">
+        <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="unlockBtn">Unlock</button>
+      </div>
+    </div>
+
+    <div class="quote-view" id="quoteView">
+      <div class="avatar-lg" id="avatarLg2"></div>
+      <h2 id="nameLabel2"></h2>
+      <blockquote id="quoteText"></blockquote>
+      <div class="actions">
+        <button class="btn btn-primary" id="doneBtn">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="celebrateAudio" src="bhagabhaga.mp3" preload="auto"></audio>
+
+<script>
+  const team = [
+    { name: "Aaditya B", quote: "They say the sky is the limit but not for you, don't forget your amazing", password: "aaditya", color: "#E85D75" },
+    { name: "Arunesh A", quote: "For all the battles you've won that no one knows about. Keep going", password: "arunesh", color: "#F2A65A" },
+    { name: "Arvind P", quote: "Take a moment today to appreciate how much you've grown, and you're still standing.", password: "arvind", color: "#4FB0A5" },
+    { name: "Gnana Swetha P", quote: "The little girl in you is proud of how far you have come. Keep going", password: "swetha", color: "#8B7FD1" },
+    { name: "Harshit S", quote: "You're building the life of a future billionaire. Be proud of every step you've taken.", password: "harshit", color: "#E8735C" },
+    { name: "Jyotipushpa S", quote: "You've carried pain that nobody saw, fought battles nobody knew about, and still found a way to keep moving. Be proud of yourself.", password: "jyotipushpa", color: "#7FA77A" },
+    { name: "Pratik V", quote: "Every time you feel like giving up, remember why you started", password: "pratik", color: "#5B8DBF" },
+    { name: "Rasika K", quote: "I hope all the kindness you show to others finds its way back to you", password: "rasika", color: "#A75B8C" },
+    { name: "Vinod C", quote: "You are capable of becoming more than you ever imagined.", password: "vinod", color: "#D4A73A" }
+  ];
+
+  const grid = document.getElementById('grid');
+  const overlay = document.getElementById('overlay');
+  const panel = document.getElementById('panel');
+  const passView = document.getElementById('passView');
+  const quoteView = document.getElementById('quoteView');
+  const avatarLg = document.getElementById('avatarLg');
+  const avatarLg2 = document.getElementById('avatarLg2');
+  const nameLabel = document.getElementById('nameLabel');
+  const nameLabel2 = document.getElementById('nameLabel2');
+  const passInput = document.getElementById('passInput');
+  const errorMsg = document.getElementById('errorMsg');
+  const quoteText = document.getElementById('quoteText');
+  const audio = document.getElementById('celebrateAudio');
+  const sparkleLayer = document.getElementById('sparkleLayer');
+  audio.loop = true;
+
+  function initials(name){
+    return name.split(' ').map(p => p[0]).slice(0,2).join('').toUpperCase();
+  }
+
+  let current = null;
+
+  team.forEach(person => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.setProperty('--accent', person.color);
+    card.innerHTML = `
+      <div>
+        <div class="avatar">${initials(person.name)}</div>
+        <div class="name">${person.name}</div>
+      </div>
+      <div class="hint">Tap to unlock your note</div>
+    `;
+    card.addEventListener('click', () => openPanel(person));
+    grid.appendChild(card);
+  });
+
+  function openPanel(person){
+    current = person;
+    sparkleLayer.innerHTML = '';
+    panel.style.setProperty('--accent', person.color);
+    avatarLg.textContent = initials(person.name);
+    avatarLg2.textContent = initials(person.name);
+    nameLabel.textContent = person.name;
+    nameLabel2.textContent = person.name;
+    passInput.value = '';
+    errorMsg.textContent = '';
+    passView.classList.remove('hidden');
+    quoteView.classList.remove('active');
+    overlay.classList.add('active');
+    setTimeout(() => passInput.focus(), 50);
+  }
+
+  function closePanel(){
+    overlay.classList.remove('active');
+    sparkleLayer.innerHTML = '';
+    current = null;
+  }
+
+  const sparkleSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z"/></svg>';
+
+  function fireSparkles(color = '#D4A73A'){
+    sparkleLayer.innerHTML = '';
+    sparkleLayer.style.setProperty('--accent', color);
+    const count = 18;
+    for (let i = 0; i < count; i++){
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.color = color;
+      s.style.setProperty('--sx', Math.random() * 100 + '%');
+      s.style.setProperty('--sy', Math.random() * 100 + '%');
+      s.style.setProperty('--ssize', (8 + Math.random() * 14) + 'px');
+      s.style.setProperty('--sdur', (0.7 + Math.random() * 0.6) + 's');
+      s.style.setProperty('--sdelay', (Math.random() * 0.35) + 's');
+      s.innerHTML = sparkleSvg;
+      sparkleLayer.appendChild(s);
+    }
+  }
+
+  function tryUnlock(){
+    if (!current) return;
+    if (passInput.value === current.password){
+      passView.classList.add('hidden');
+      quoteView.classList.add('active');
+      quoteText.innerHTML = current.quote + ' <span class="heart">&#10084;</span>';
+
+      if (audio.paused) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      }
+
+      fireSparkles(current.color);
+    } else {
+      errorMsg.textContent = "That's not quite it — try again.";
+      passInput.value = '';
+      passInput.focus();
+    }
+  }
+
+  document.getElementById('unlockBtn').addEventListener('click', tryUnlock);
+  passInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+  document.getElementById('cancelBtn').addEventListener('click', closePanel);
+  document.getElementById('closeBtn').addEventListener('click', closePanel);
+  document.getElementById('doneBtn').addEventListener('click', closePanel);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closePanel(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('active')) closePanel(); });
+</script>
+
+</body>
+</html>
