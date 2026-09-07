@@ -498,6 +498,99 @@
     margin-top: 24px;
   }
 
+  .team-finish {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background: rgba(10, 7, 22, 0.8);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 100;
+  }
+
+  .team-finish.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .team-finish-card {
+    position: relative;
+    width: min(620px, 100%);
+    background: linear-gradient(180deg, rgba(62, 52, 102, 0.98), rgba(28, 22, 49, 0.98));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px;
+    padding: 36px 28px 30px;
+    text-align: center;
+    box-shadow: 0 28px 60px rgba(7, 5, 18, 0.54);
+    overflow: hidden;
+  }
+
+  .team-finish-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(255,255,255,0.1), transparent 45%);
+    pointer-events: none;
+  }
+
+  .team-finish-card .tag {
+    color: var(--gold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 11px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .team-finish-card h2 {
+    margin: 0 0 16px;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.1;
+    font-family: 'Fraunces', serif;
+  }
+
+  .team-finish-card p {
+    margin: 0;
+    color: var(--ink-dim);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .team-finish-card .heart {
+    color: #F16D7F;
+  }
+
+  .confetti-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 90;
+  }
+
+  .confetti {
+    position: absolute;
+    top: -20px;
+    width: 8px;
+    height: 18px;
+    border-radius: 4px;
+    opacity: 0;
+    animation: confettiFall 2.2s ease-in forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.5); }
+    15% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(110vh) rotate(420deg) scale(1); }
+  }
+
   .quote-view blockquote{
     font-family: 'Fraunces', serif;
     font-style: italic;
@@ -630,6 +723,16 @@
   </div>
 </div>
 
+<div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+
+<div class="team-finish" id="teamFinish">
+  <div class="team-finish-card">
+    <span class="tag">For the team</span>
+    <h2>We love this team <span class="heart">❤</span></h2>
+    <p>Thank you for being the kind of people who make this journey meaningful, warm, and unforgettable.</p>
+  </div>
+</div>
+
 <div class="overlay" id="overlay">
   <div class="panel" id="panel">
     <button class="close-x" id="closeBtn" aria-label="Close">&times;</button>
@@ -690,6 +793,8 @@
   const finalPopup = document.getElementById('finalPopup');
   const finalPopupText = document.getElementById('finalPopupText');
   const unlockCounter = document.getElementById('unlockCounter');
+  const confettiLayer = document.getElementById('confettiLayer');
+  const teamFinish = document.getElementById('teamFinish');
   audio.loop = true;
 
   function updateUnlockCounter() {
@@ -773,6 +878,34 @@
     finalPopup.classList.remove('active');
   }
 
+  function launchConfetti(){
+    confettiLayer.innerHTML = '';
+    const colors = ['#F2A65A', '#E85D75', '#D4A73A', '#79C7B3', '#A7B4FF', '#F8F1D0'];
+    for (let i = 0; i < 36; i++) {
+      const piece = document.createElement('span');
+      piece.className = 'confetti';
+      piece.style.left = (Math.random() * 100) + '%';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = (Math.random() * 0.5) + 's';
+      piece.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+      confettiLayer.appendChild(piece);
+    }
+
+    setTimeout(() => {
+      confettiLayer.innerHTML = '';
+    }, 2300);
+  }
+
+  function showTeamFinish(){
+    const unlocked = document.querySelectorAll('.card.unlocked').length;
+    if (unlocked === team.length) {
+      setTimeout(() => {
+        launchConfetti();
+        teamFinish.classList.add('active');
+      }, 200);
+    }
+  }
+
   const sparkleSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z"/></svg>';
 
   function fireSparkles(color = '#D4A73A'){
@@ -816,6 +949,7 @@
 
       updateUnlockCounter();
       hasUnlockedCard = true;
+      showTeamFinish();
 
       fireSparkles(current.color);
     } else {
